@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 project(minimal-libtorch)
 
-set(CMAKE_PREFIX_PATH "C:/Users/sking/OneDrive/Dokumenty/NeuralAmp/libtorch")
+set(CMAKE_PREFIX_PATH "C:/Users/sking/OneDrive/Dokumenty/ai_audio_book_notes/libtorch")
 
 find_package(Torch REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
@@ -16,8 +16,11 @@ set_property(TARGET minimal-libtorch PROPERTY CXX_STANDARD 20)
 add_custom_command(
     TARGET minimal-libtorch POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-            "${CMAKE_CURRENT_SOURCE_DIR}/my_lstm.pt"
-            "$<TARGET_FILE_DIR:minimal-libtorch>/my_lstm.pt"
+            "${CMAKE_CURRENT_SOURCE_DIR}/my_lstm_no_state1.pt"
+            "$<TARGET_FILE_DIR:minimal-libtorch>/my_lstm_no_state.pt"
+    COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_CURRENT_SOURCE_DIR}/my_lstm_with_state1.pt"
+            "$<TARGET_FILE_DIR:minimal-libtorch>/my_lstm_with_state.pt"
     COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_CURRENT_SOURCE_DIR}/sine_400_16bit.wav"
             "$<TARGET_FILE_DIR:minimal-libtorch>/sine_400_16bit.wav"

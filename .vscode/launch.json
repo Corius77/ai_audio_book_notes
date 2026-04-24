@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Plugin (AudioPluginHost)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/LSTMPlugin/build/AudioPluginHost/AudioPluginHost_artefacts/Debug/AudioPluginHost.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/LSTMPlugin/build/AudioPluginHost/AudioPluginHost_artefacts/Debug",
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "C:/Users/sking/OneDrive/Dokumenty/ai_audio_book_notes/libtorch/lib;${env:PATH}"
+                }
+            ],
+            "console": "internalConsole"
+        }
+    ]
+}
