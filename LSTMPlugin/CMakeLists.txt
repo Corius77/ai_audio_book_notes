@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 project(LSTMPlugin VERSION 0.1.0)
 
-set(LIBTORCH_DIR "C:/Users/sking/OneDrive/Dokumenty/ai_audio_book_notes/libtorch")
+set(LIBTORCH_DIR "C:/libtorch")
 set(CMAKE_PREFIX_PATH "${LIBTORCH_DIR}")
 find_package(Torch REQUIRED)
 
@@ -58,8 +58,8 @@ set_property(TARGET LSTMPlugin PROPERTY CXX_STANDARD 20)
 
 add_custom_command(TARGET LSTMPlugin_VST3 POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-            "${CMAKE_CURRENT_SOURCE_DIR}/Resources/my_lstm_with_state.pt"
-            "$<TARGET_FILE_DIR:LSTMPlugin_VST3>/my_lstm_with_state.pt"
+            "${CMAKE_CURRENT_SOURCE_DIR}/Resources/dist_32.pt"
+            "$<TARGET_FILE_DIR:LSTMPlugin_VST3>/dist_32.pt"
 )
 
 # Copy LibTorch DLLs into the VST3 bundle so AudioPluginHost can load the plugin

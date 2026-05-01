@@ -54,6 +54,7 @@ private:
     LSTMState lstmState;
     LSTMState getRandomStartState(int numLayers, int hiddenSize);
     LSTMState processBlockState(torch::jit::script::Module& model, const LSTMState& state, std::vector<float>& inBlock, std::vector<float>& outBlock, int numSamples);
+    void processBlockNN(torch::jit::script::Module& model, const LSTMState& state, std::vector<float>& inBlock, std::vector<float>& outBlock, int numSamples);
     
     std::vector<float> inBuffer;
     std::vector<float> outBuffer;

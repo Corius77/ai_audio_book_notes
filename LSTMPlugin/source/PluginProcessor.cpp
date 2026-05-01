@@ -1,5 +1,9 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include <windows.h>
+#include <string>
+#include <iostream>
+#include <filesystem>
 
 //==============================================================================
 AudioPluginAudioProcessor::AudioPluginAudioProcessor()
@@ -12,8 +16,19 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor()
                      #endif
                        )
 {
-    lstmModel = torch::jit::load("my_lstm_with_state.pt");
-    lstmState = getRandomStartState(1, 1);
+
+  // Zastosowano zwykłe ukośniki `/` aby uniknąć problemu ze znakiem `\a`
+  std::string modelFolder {"C:/Users/sking/OneDrive/Dokumenty/ai_audio_book_notes/LSTMPlugin/Resources/"};
+  
+  std::string fp {modelFolder + "dist_32.pt"};
+  if (!std::filesystem::exists(fp)){
+    DBG("File " << fp << "not found");
+    // throw std::exception();
+  }
+
+  DBG("Loading model from " << fp);
+  lstmModel = torch::jit::load(fp);
+
 }
 
 AudioPluginAudioProcessor::~AudioPluginAudioProcessor()
@@ -160,7 +175,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 
         std::copy(input, input + inBuffer.size(), inBuffer.begin());
 
-        processBlockState(lstmModel, lstmState, inBuffer, outBuffer, buffer.getNumSamples());
+        processBlockNN(lstmModel, lstmState, inBuffer, outBuffer, buffer.getNumSamples());
 
         auto* output = buffer.getWritePointer(channel); 
 
@@ -226,4 +241,18 @@ LSTMState AudioPluginAudioProcessor::processBlockState(torch::jit::script::Modul
   std::copy(data_ptr, data_ptr+inBlock.size(), outBlock.begin());
   // now retain the state
   return out_elements[1].toTuple();
+}
+
+void AudioPluginAudioProcessor::processBlockNN(torch::jit::script::Module& model, const LSTMState& state, std::vector<float>& inBlock, std::vector<float>& outBlock, int numSamples) {
+    
+    torch::Tensor in_t = torch::from_blob(inBlock.data(), {static_cast<int64_t>(numSamples)});
+    in_t = in_t.view({1, -1, 1});
+    std::vector<torch::jit::IValue> inputs;
+    inputs.push_back(in_t);
+    torch::jit::IValue out_ival = model.forward(inputs);
+    torch::Tensor out_t = out_ival.toTensor();
+    out_t = out_t.view({-1});
+    float* data_ptr = out_t.data_ptr<float>();
+    std::copy(data_ptr, data_ptr+inBlock.size(), outBlock.begin());
+
 }
